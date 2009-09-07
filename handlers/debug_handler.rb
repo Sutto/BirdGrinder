@@ -2,9 +2,11 @@
 # go along - e.g. dump events etc.
 class DebugHandler < BirdGrinder::CommandHandler
 
-  def handle(message, options)
-    logger.debug "Processing #{message.inspect} with options: #{options.inspect}"
-    super
+  exposes :hello
+  
+  def hello(message)
+    logger.info "Got hello from #{user} w/: #{message.inspect}"
+    reply "Why hello there"
   end
     
 end

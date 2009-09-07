@@ -32,7 +32,7 @@ module BirdGrinder
       
     end
     
-    attr_accessor :options, :client
+    attr_accessor :options, :client, :user
     
     def handle(message, options)
       begin
@@ -62,7 +62,7 @@ module BirdGrinder
         @client.dm(@user, message)
       else
         opts = {}
-        opts[:in_reply_to_id] = @last_message_id if @last_message_id.present?
+        opts[:in_reply_to_status_id] = @last_message_id.to_s if @last_message_id.present?
         @client.reply(@user, message, opts)
       end
     end

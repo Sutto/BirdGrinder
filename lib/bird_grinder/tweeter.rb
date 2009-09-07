@@ -138,7 +138,9 @@ module BirdGrinder
     def add_response_callback(http, blk)
       http.callback do
         json = parse_response(http)
-        if successful?(json)
+        if json.nil?
+          logger.warn "Got back a blank / errored response."
+        elsif successful?(json)
           blk.call(json) unless blk.blank?
         else
           logger.debug "Error: #{json["error"]} (on #{json["request"]})"
@@ -147,8 +149,10 @@ module BirdGrinder
     end
     
     def parse_response(http)
-      p http.response
       JSON.parse(http.response)
+    rescue JSON::ParserError
+      logger.warn "Invalid Response: #{http.response}"
+      return nil
     end
     
     def successful?(json)
