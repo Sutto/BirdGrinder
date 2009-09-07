@@ -1,7 +1,7 @@
 module BirdGrinder
   class Tweeter
     class StreamProcessor
-      include BirdGrinder::Loggable
+      is :loggable
       
       def initialize(parent, stream_name)
         @buffer = BufferedTokenizer.new

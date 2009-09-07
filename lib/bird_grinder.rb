@@ -11,13 +11,14 @@ module BirdGrinder
     VERSION.join(".")
   end
   
-  has_library :cacheable, :tweeter, :client
-  
-  extends_library :loader
-  
   manifest do |m, l|
     Settings.lookup_key_path = []
     Settings.root = __FILE__.to_pathname.dirname.dirname
+    l.register_controller :client, 'BirdGrinder::Client'
   end
+  
+  has_library :cacheable, :tweeter, :client
+  
+  extends_library :loader
   
 end

@@ -4,8 +4,7 @@ require 'uri'
 module BirdGrinder
   # Asynchronous twitter client built on eventmachine
   class Tweeter
-    include BirdGrinder::Loggable
-    include BirdGrinder::Delegateable
+    is :loggable, :delegateable
     
     require 'bird_grinder/tweeter/stream_processor'
     
