@@ -32,7 +32,6 @@ module BirdGrinder
         logger.debug "Checking for command in direct message"
         command, data = options.text.split(" ", 2)
       end
-      
       if (command_name = extract_command_name(command)).present?
         logger.info "Processing command '#{command_name}' for #{user}"
         send(command_name, data) if respond_to?(command_name)
@@ -48,5 +47,4 @@ module BirdGrinder
     end
     
   end
-  
 end
