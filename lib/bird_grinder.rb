@@ -14,6 +14,7 @@ module BirdGrinder
   autoload :Tweeter, 'bird_grinder/tweeter'
   
   manifest do |m, l|
+    Settings.lookup_key_path = []
     Settings.root = File.dirname(__FILE__)
   end
   
