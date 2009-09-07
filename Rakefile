@@ -26,7 +26,7 @@ task :gemspec do
     s.summary  = "Evented Twitter Library of Doom"
     s.files    = FileList["{bin,vendor,lib,test}/**/*"].to_a
     s.platform = Gem::Platform::RUBY
-    s.add_dependency "Sutto-perennial", ">= 0.2.3.2"
+    s.add_dependency "Sutto-perennial", ">= 0.2.3.3"
   end
   File.open("bird_grinder.gemspec", "w+") { |f| f.puts spec.to_ruby }
 end

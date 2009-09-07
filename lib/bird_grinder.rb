@@ -11,11 +11,13 @@ module BirdGrinder
     VERSION.join(".")
   end
   
-  autoload :Tweeter, 'bird_grinder/tweeter'
+  has_library :cacheable, :tweeter, :client
+  
+  extends_library :loader
   
   manifest do |m, l|
     Settings.lookup_key_path = []
-    Settings.root = File.dirname(__FILE__)
+    Settings.root = __FILE__.to_pathname.dirname.dirname
   end
   
 end
