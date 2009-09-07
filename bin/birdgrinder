@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require 'rubygems'
 require File.join(File.dirname(__FILE__), "..", "lib", "bird_grinder")
 
 BirdGrinder::Application.processing(ARGV) do |a|
