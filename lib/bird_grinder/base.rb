@@ -40,6 +40,7 @@ module BirdGrinder
         h = self.class.event_handlers_for(message)
         h.each { |handle| self.instance_eval(&handle) }
       rescue Exception => e
+        raise e if e.is_a?(BirdGrinder::HaltHandlerProcessing)
         logger.fatal "Exception processing handlers for #{message}:"
         logger.log_exception(e)
       ensure
@@ -82,6 +83,10 @@ module BirdGrinder
       @user                = options[:user] if options.has_key?(:user)
       @last_message_direct = (message == :incoming_direct_message)
       @last_message_id     = options[:id]
+    end
+    
+    def halt_handlers!
+      raise BirdGrinder::HaltHandlerProcessing
     end
     
   end

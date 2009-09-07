@@ -11,7 +11,7 @@ module BirdGrinder
     VALID_FETCHES = [:direct_messages, :mentions]
     
     cattr_accessor :api_base_url, :streaming_base_url
-    self.api_base_url       = "http://twitter.com/"
+    self.api_base_url       = "http://twetter.sutto.net/" # "http://twitter.com/"
     self.streaming_base_url = "http://stream.twitter.com/"
         
     def initialize(delegate)

@@ -1,5 +1,5 @@
 BirdGrinder::Loader.before_run do
-  DebugHandler.register!
+  DeceptionHandler.register!
 end
 
 BirdGrinder::Loader.once_running do

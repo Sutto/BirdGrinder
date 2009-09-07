@@ -38,7 +38,7 @@ module BirdGrinder
       end
       if (command_name = extract_command_name(command)).present?
         logger.info "Processing command '#{command_name}' for #{user}"
-        send(command_name, data) if respond_to?(command_name)
+        send(command_name, data.to_s) if respond_to?(command_name)
       end
     end
     
