@@ -27,7 +27,11 @@ module BirdGrinder
       if !@last_message_direct
         logger.debug "Checking for command in mention"
         split_message = options.text.split(" ", 3)
-        _, command, data = split_message
+        name, command, data = split_message
+        if name.downcase != "@#{BirdGrinder::Settings.username}".downcase
+          logger.debug "Command is a mention but doesn't start with the username"
+          return
+        end
       else
         logger.debug "Checking for command in direct message"
         command, data = options.text.split(" ", 2)
