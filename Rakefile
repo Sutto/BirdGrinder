@@ -24,11 +24,23 @@ task :gemspec do
     s.authors  = ["Darcy Laycock"]
     s.version  = BirdGrinder::VERSION
     s.summary  = "Evented Twitter Library of Doom"
-    s.files    = FileList["{bin,vendor,lib,test}/**/*"].to_a
+    s.files    = FileList["{bin,config,handlers,lib}/**/*"].to_a
     s.platform = Gem::Platform::RUBY
     s.add_dependency "Sutto-perennial",           ">= 0.2.3.5"
     s.add_dependency "eventmachine-eventmachine", ">= 0.12.9"
     s.add_dependency "igrigorik-em-http-request", ">= 0.1.8"
   end
   File.open("bird_grinder.gemspec", "w+") { |f| f.puts spec.to_ruby }
+end
+
+def gemi(name, version)
+  command = "gem install #{name} --version '#{version}' --source http://gems.github.com"
+  puts ">> #{command}"
+  system "#{command} 1> /dev/null 2> /dev/null"
+end
+
+task :install_dependencies do
+  gemi "Sutto-perennial",           ">= 0.2.3.5"
+  gemi "eventmachine-eventmachine", ">= 0.12.9"
+  gemi "igrigorik-em-http-request", ">= 0.1.8"
 end
