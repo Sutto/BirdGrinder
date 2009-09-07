@@ -17,6 +17,7 @@ module BirdGrinder
         tweet_drop_klass = Class.new(Object)
         tweet_drop_klass.class_eval do
           def receive_message(name, options)
+            puts ">> #{name.inspect} > #{options.inspect}"
             $tweet_drop_result = [name, options]
           end
         end

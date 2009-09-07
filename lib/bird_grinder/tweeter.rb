@@ -115,7 +115,7 @@ module BirdGrinder
     def get(path, params = {}, &blk)
       http = request(path).get({
         :head => {'Authorization' => @auth_credentials},
-        :query => params.stringify_key
+        :query => params.stringify_keys
       })
       add_response_callback(http, blk)
       return http
@@ -147,6 +147,7 @@ module BirdGrinder
     end
     
     def parse_response(http)
+      p http.response
       JSON.parse(http.response)
     end
     
