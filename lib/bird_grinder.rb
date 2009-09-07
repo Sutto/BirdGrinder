@@ -17,7 +17,7 @@ module BirdGrinder
     l.register_controller :client, 'BirdGrinder::Client'
   end
   
-  has_library :cacheable, :tweeter, :client
+  has_library :cacheable, :tweeter, :client, :base
   
   extends_library :loader
   
