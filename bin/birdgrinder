@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require File.join(File.dirname(__FILE__), "..", "lib", "bird_grinder")
+
+BirdGrinder::Application.processing(ARGV) do |a|
+  a.banner = "BirdGrinder v#{BirdGrinder.version}"
+
+  a.controller! :console, "Starts up a BirdGrinder friendly IRB instance"
+  
+  a.controller! :client, "Controls the current BirdGrinder instance"
+
+end

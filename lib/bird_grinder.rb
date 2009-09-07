@@ -14,10 +14,11 @@ module BirdGrinder
   manifest do |m, l|
     Settings.lookup_key_path = []
     Settings.root = __FILE__.to_pathname.dirname.dirname
-    l.register_controller :client, 'BirdGrinder::Client'
+    l.register_controller :client,  'BirdGrinder::Client'
+    l.register_controller :console, 'BirdGrinder::Console'
   end
   
-  has_library :cacheable, :tweeter, :client, :base, :command_handler
+  has_library :cacheable, :tweeter, :client, :base, :command_handler, :console
   
   extends_library :loader
   
