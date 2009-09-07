@@ -32,7 +32,7 @@ module BirdGrinder
       
     end
     
-    attr_accessor :options, :logger, :client
+    attr_accessor :options, :client
     
     def handle(message, options)
       begin

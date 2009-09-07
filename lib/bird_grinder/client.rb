@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module BirdGrinder
   class Client
     is :loggable, :dispatchable, :cacheable
@@ -42,7 +44,7 @@ module BirdGrinder
       logger.info "Preparing to start BirdGrinder"
       client = self.new
       EventMachine.run do
-        client.run
+        client.update_all
         BirdGrinder::Loader.invoke_hooks!(:once_running)
       end
     end
