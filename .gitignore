@@ -3,3 +3,4 @@ tmp/pids/*.pid
 config/settings.yml
 *.gem
 data/*
+pkg/

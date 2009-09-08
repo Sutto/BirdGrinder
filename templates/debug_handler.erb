@@ -1,0 +1,13 @@
+# Use this class to debug stuff as you 
+# go along - e.g. dump events etc.
+class DebugHandler < BirdGrinder::Base
+
+  on_event :incoming_mention do
+    logger.debug ">> Mention from #{user} - #{options.inspect}"
+  end
+    
+  on_event :incoming_direct_message do
+    logger.debug ">> DM from #{user} - #{options.inspect}"
+  end
+
+end
