@@ -12,7 +12,7 @@ module BirdGrinder
     
     cattr_accessor :api_base_url
     self.api_base_url       = "http://twetter.sutto.net/" # "http://twitter.com/"
-        
+      
     attr_reader :auth_credentials
         
     def initialize(delegate)

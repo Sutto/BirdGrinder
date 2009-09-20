@@ -16,6 +16,8 @@ spec = Gem::Specification.new do |s|
   s.add_dependency "Sutto-perennial",           ">= 0.2.3.5"
   s.add_dependency "eventmachine-eventmachine", ">= 0.12.9"
   s.add_dependency "igrigorik-em-http-request", ">= 0.1.8"
+  s.add_dependency "madsimian-em-redis",        ">= 0.1.1"
+  s.add_dependency "wycats_moneta",             ">= 0.6.0"
 end
 
 task :default => "test:units"
