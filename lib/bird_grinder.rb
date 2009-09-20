@@ -21,7 +21,7 @@ module BirdGrinder
     l.register_controller :console, 'BirdGrinder::Console'
   end
   
-  has_library :cacheable, :tweeter, :client, :base, :command_handler, :console
+  has_library :cacheable, :tweeter, :client, :base, :command_handler, :console, :queue_processor
   
   extends_library :loader
   

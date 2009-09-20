@@ -12,7 +12,6 @@ module BirdGrinder
       def search_for(query, opts = {})
         url = search_base_url / "search.json"
         request = EventMachine::HttpRequest.new
-        http = request.get()
       end
       
     end
