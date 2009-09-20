@@ -2,3 +2,4 @@ log/*.log
 tmp/pids/*.pid
 config/settings.yml
 *.gem
+data/*
