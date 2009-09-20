@@ -3,10 +3,32 @@ require 'rubygems'
 require File.join(File.dirname(__FILE__), "..", "lib", "bird_grinder")
 
 BirdGrinder::Application.processing(ARGV) do |a|
+  
   a.banner = "BirdGrinder v#{BirdGrinder.version}"
 
+  a.generator!
+
   a.controller! :console, "Starts up a BirdGrinder friendly IRB instance"
-  
-  a.controller! :client, "Controls the current BirdGrinder instance"
+  a.controller! :client,  "Controls the current BirdGrinder instance"
+
+  a.option(:force, "force the creation of the application")
+  a.add("create PATH", "Creates a BirdGrinder instance at a specified location") do |path, options|
+    
+    path = File.expand_path(path)
+    if File.exists?(path) && !options[:force]
+      die! "The path you tried to use, #{path}, already exists. Please try another or use the --force option"
+    end
+    
+    setup_generator path
+    
+    folders 'tmp', 'config', 'lib', 'handlers', 'test'
+    template 'boot.erb', 'config/boot.rb'
+    template 'setup.erb', 'config/setup.rb'
+    template 'settings.yml.erb', 'settings.yml'
+    template 'debug_handler.erb', 'handlers/debug_handler.rb'
+    template 'hello_world_handler.erb', 'handlers/hello_world_handler.rb'
+    template 'rakefile.erb', 'Rakefile'
+    
+  end
 
 end

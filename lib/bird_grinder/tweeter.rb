@@ -6,13 +6,14 @@ module BirdGrinder
   class Tweeter
     is :loggable, :delegateable
     
-    require 'bird_grinder/tweeter/stream_processor'
+    require 'bird_grinder/tweeter/streaming'
     
     VALID_FETCHES = [:direct_messages, :mentions]
     
-    cattr_accessor :api_base_url, :streaming_base_url
+    cattr_accessor :api_base_url
     self.api_base_url       = "http://twetter.sutto.net/" # "http://twitter.com/"
-    self.streaming_base_url = "http://stream.twitter.com/"
+      
+    attr_reader :auth_credentials
         
     def initialize(delegate)
       check_auth!
@@ -61,6 +62,10 @@ module BirdGrinder
       end
     end
     
+    def streaming
+      @streaming ||= Streaming.new(self)
+    end
+    
     def reply(user, text, opts = {})
       user = user.to_s.strip
       text = text.to_s.strip
@@ -94,18 +99,7 @@ module BirdGrinder
         end
       end
     end
-  
-    def streaming(name, opts = {})
-      processor = StreamProcessor.new(self, name.to_sym)
-      http_opts = {
-        :on_response => processor.method(:receive_chunk),
-        :head        => {'Authorization' => @auth_credentials}
-      }
-      http_opts[:query] = opts unless opts.blank?
-      url  = streaming_base_url / "#{name.to_s}.json"
-      EventMachine::HttpRequest.new(url).get(http_opts)
-    end
-      
+        
     protected
     
     def request(path = "/")

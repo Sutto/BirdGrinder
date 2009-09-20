@@ -1,0 +1,10 @@
+class HelloWorldHandler < BirdGrinder::CommandHandler
+
+  exposes :hello
+  
+  def hello(message)
+    logger.info "Got hello from #{user} w/: #{message.inspect}"
+    reply "Why hello there"
+  end
+    
+end
