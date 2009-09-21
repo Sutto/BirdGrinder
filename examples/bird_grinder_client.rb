@@ -15,7 +15,11 @@ class BirdGrinderClient
   end
   
   def initialize(*args)
-    @redis = Redis.new(*args)
+    begin
+      @redis = Redis.new(*args)
+    rescue Errno::ECONNREFUSED
+      raise Error, "Unable to connect to Redis"
+    end
   end
   
   def dm(user, message)
@@ -30,7 +34,7 @@ class BirdGrinderClient
     @redis.push_tail(@@namespace, {'action' => name.to_s, 'arguments' => args}.to_json)
     return true
   rescue Errno::ECONNREFUSED
-    raise Error, "Unable to connect to redis to store message"
+    raise Error, "Unable to connect to Redis to store message"
   end
   
 end
