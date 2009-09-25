@@ -1,5 +1,4 @@
 require 'em-redis'
-require 'json'
 
 module BirdGrinder
   class QueueProcessor
@@ -27,7 +26,11 @@ module BirdGrinder
           schedule_check(@@polling_delay)
         else
           logger.debug "Got item, processing and scheduling next check"
-          process_response(res)
+          begin
+            handle_action Yajl::Parser.parse(res)
+          rescue Yajl::ParseError => e
+            logger.error "Couldn't parse json: #{e.message}"
+          end
           schedule_check
         end
       end
@@ -41,13 +44,10 @@ module BirdGrinder
       end
     end
     
-    def process_response(res)
-      d = JSON.parse(res)
-      if d["action"].present?
-        handle_action(d["action"], d["arguments"])
+    def process_action(res)
+      if res.is_a?(Hash) && res["action"].present?
+        handle_action(res["action"], res["arguments"])
       end
-    rescue JSON::ParserError => e
-      logger.error "Couldn't parse json: #{e.message}"
     end
     
     def handle_action(action, args)

@@ -1,7 +1,7 @@
 lib_path = File.dirname(__FILE__)
 $LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
 require 'perennial'
-
+require 'yajl'
 require 'eventmachine'
 require 'em-http'
 

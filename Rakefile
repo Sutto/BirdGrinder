@@ -13,11 +13,12 @@ spec = Gem::Specification.new do |s|
   s.summary  = "Evented Twitter Library of Doom"
   s.files    = FileList["{bin,lib,templates,test}/**/*"].to_a
   s.platform = Gem::Platform::RUBY
-  s.add_dependency "Sutto-perennial",           ">= 0.2.3.5"
-  s.add_dependency "eventmachine-eventmachine", ">= 0.12.9"
+  s.add_dependency "perennial",                 ">= 0.2.3.5"
+  s.add_dependency "eventmachine",              ">= 0.12.8"
   s.add_dependency "igrigorik-em-http-request", ">= 0.1.8"
   s.add_dependency "madsimian-em-redis",        ">= 0.1.1"
   s.add_dependency "wycats_moneta",             ">= 0.6.0"
+  s.add_dependency "yajl-ruby"
 end
 
 task :default => "test:units"

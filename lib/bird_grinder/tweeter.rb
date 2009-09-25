@@ -1,4 +1,3 @@
-require 'json'
 require 'uri'
 
 module BirdGrinder
@@ -11,7 +10,7 @@ module BirdGrinder
     VALID_FETCHES = [:direct_messages, :mentions]
     
     cattr_accessor :api_base_url
-    self.api_base_url       = "http://twetter.sutto.net/" # "http://twitter.com/"
+    self.api_base_url = "http://twetter.sutto.net/"
       
     attr_reader :auth_credentials
         
@@ -143,9 +142,9 @@ module BirdGrinder
     end
     
     def parse_response(http)
-      JSON.parse(http.response)
-    rescue JSON::ParserError
-      logger.warn "Invalid Response: #{http.response}"
+      Yajl::Parser.parse(http.response)
+    rescue Yajl::ParseError => e
+      logger.warn "Invalid Response: #{http.response} (#{e.message})"
       return nil
     end
     
