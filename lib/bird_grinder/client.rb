@@ -15,10 +15,10 @@ module BirdGrinder
       self.current = self
     end
     
-    def receive_message(type, options = {})
-      logger.debug "receiving message: #{type.inspect} - #{options[:id].inspect}"
+    def receive_message(type, options = BirdGrinder::Nash.new)
+      logger.debug "receiving message: #{type.inspect} - #{options.id}"
       dispatch(type.to_sym, options)
-      update_stored_id_for(type, options[:id])
+      update_stored_id_for(type, options.id)
     end
     
     def update_all
@@ -64,7 +64,9 @@ module BirdGrinder
     end
     
     def stored_id_for(type)
-      cache_get("#{type}-last-id")
+      Integer(cache_get("#{type}-last-id"))
+    rescue ArgumentError
+      return -1
     end
     
     def update_stored_id_for(type, id)

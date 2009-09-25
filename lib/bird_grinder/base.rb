@@ -79,10 +79,11 @@ module BirdGrinder
     end
     
     def setup_details(message, options)
-      @options             = options.is_a?(OpenStruct) ? options : OpenStruct.new(options)
-      @user                = options[:user] if options.has_key?(:user)
-      @last_message_direct = (message == :incoming_direct_message)
-      @last_message_id     = options[:id]
+      @options               = options.to_nash
+      @user                  = options.user.screen_name if options.user? && options.user.screen_name?
+      @user                ||= options.sender_screen_name if options.sender_screen_name?
+      @last_message_direct   = (message == :incoming_direct_message)
+      @last_message_id       = options.id
     end
     
     def halt_handlers!

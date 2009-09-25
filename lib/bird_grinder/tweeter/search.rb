@@ -3,7 +3,7 @@ module BirdGrinder
     class Search
       
       cattr_accessor :search_base_url
-      self.search_base_url = "http://search.twitter.com/"
+      @@search_base_url = "http://search.twitter.com/"
       
       def initialize
         logger.debug "Initializing Search"

@@ -74,26 +74,19 @@ module BirdGrinder
     
     def direct_messages(opts = {})
       logger.debug "Fetching direct messages..."
-      get("direct_messages.json", opts) do |json|
-        logger.debug "Fetched a total of #{json.size} direct message(s)"
-        json.each do |dm|
-          delegate.receive_message(:incoming_direct_message, {
-            :type       => :direct_message,
-            :id         => dm["id"].to_i,
-            :full_name  => dm["sender"]["name"],
-            :user       => dm["sender"]["screen_name"],
-            :text       => dm["text"],
-            :created_at => Time.parse(dm["created_at"])
-          })
+      get("direct_messages.json", opts) do |dms|
+        logger.debug "Fetched a total of #{dms.size} direct message(s)"
+        dms.each do |dm|
+          delegate.receive_message(:incoming_direct_message, status_to_args(dm, :direct_message))
         end
       end
     end
     
     def mentions(opts = {})
       logger.debug "Fetching mentions..."
-      get("statuses/mentions.json", opts) do |json|
-        logger.debug "Fetched a total of #{json.size} mention(s)"
-        json.each do |status|
+      get("statuses/mentions.json", opts) do |mentions|
+        logger.debug "Fetched a total of #{mentions.size} mention(s)"
+        mentions.each do |status|
           delegate.receive_message(:incoming_mention, status_to_args(status, :mention))
         end
       end
@@ -130,45 +123,42 @@ module BirdGrinder
     
     def add_response_callback(http, blk)
       http.callback do
-        json = parse_response(http)
-        if json.nil?
+        res = parse_response(http)
+        if res.nil?
           logger.warn "Got back a blank / errored response."
-        elsif successful?(json)
-          blk.call(json) unless blk.blank?
+        elsif successful?(res)
+          blk.call(res) unless blk.blank?
         else
-          logger.debug "Error: #{json["error"]} (on #{json["request"]})"
+          logger.debug "Error: #{res.error} (on #{res.request})"
         end
       end
     end
     
     def parse_response(http)
-      Yajl::Parser.parse(http.response)
+      response = Yajl::Parser.parse(http.response)
+      if response.respond_to?(:to_ary)
+        response.map { |i| i.to_nash }
+      else
+        response.to_nash
+      end
     rescue Yajl::ParseError => e
       logger.warn "Invalid Response: #{http.response} (#{e.message})"
-      return nil
+      nil
     end
     
-    def successful?(json)
-      json.is_a?(Hash) ? json["error"].blank? : true
+    def successful?(response)
+      response.respond_to?(:to_nash) ? !response.to_nash.error? : true
     end
     
-    def status_to_args(status_hash, type = :tweet)
-      return {} if status_hash.blank?
-      {
-        :user                  => status_hash["user"]["screen_name"],
-        :full_name             => status_hash["user"]["name"],
-        :text                  => status_hash["text"],
-        :in_reply_to_status_id => status_hash["in_reply_to_status_id"],
-        :created_at            => Time.parse(status_hash["created_at"]),
-        :type                  => type,
-        :id                    => status_hash["id"].to_i
-      }
+    def status_to_args(status_items, type = :tweet)
+      results = status_items.to_nash.normalized
+      results.type = type
+      results
     end
     
     def check_auth!
       if BirdGrinder::Settings["username"].blank? || BirdGrinder::Settings["username"].blank?
-        raise BirdGrinder::MissingAuthDetails,
-              "Missing twitter username or password."
+        raise BirdGrinder::MissingAuthDetails, "Missing twitter username or password."
       end
     end
     
