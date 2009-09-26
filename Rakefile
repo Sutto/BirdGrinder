@@ -18,10 +18,12 @@ spec = Gem::Specification.new do |s|
   s.version     = CURRENT_VERSION
   s.add_dependency "perennial",                 ">= 1.0.0.0"
   s.add_dependency "eventmachine",              ">= 0.12.8"
+  # From GitHub.
+  s.add_dependency "brianmario-yajl-ruby",      ">= 0.6.3"
   s.add_dependency "igrigorik-em-http-request", ">= 0.1.8"
   s.add_dependency "madsimian-em-redis",        ">= 0.1.1"
   s.add_dependency "wycats_moneta",             ">= 0.6.0"
-  s.add_dependency "yajl-ruby"
+  
 end
 
 task :default => "test:units"
@@ -45,7 +47,7 @@ task :gemspec do
 end
 
 def gemi(name, version)
-  command = "gem install #{name} --version '#{version}' --source http://gems.github.com"
+  command = "gem install #{name} --version '#{version}'"
   puts ">> #{command}"
   system "#{command} 1> /dev/null 2> /dev/null"
 end
