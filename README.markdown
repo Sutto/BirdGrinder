@@ -107,3 +107,8 @@ I welcome any and all contributions, but please keep a few things in mind:
 
 - I have the right to decide what gets pulled in.
 - If you maintain your own version, please bump it in separate commits to actual functionality.
+
+Any Questions?
+==============
+
+Contact sutto@sutto.net or ping SuttoL on Freenode
