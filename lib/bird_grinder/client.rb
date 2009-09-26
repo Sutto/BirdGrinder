@@ -26,6 +26,10 @@ module BirdGrinder
       update_and_schedule_fetch
     end
     
+    def search(q, opts = {})
+      @tweeter.search(q, opts)
+    end
+    
     def tweet(text, opts = {})
       @tweeter.tweet(text, opts)
     end

@@ -6,6 +6,7 @@ module BirdGrinder
     is :loggable, :delegateable
     
     require 'bird_grinder/tweeter/streaming'
+    require 'bird_grinder/tweeter/search'
     
     VALID_FETCHES = [:direct_messages, :mentions]
     
@@ -65,6 +66,11 @@ module BirdGrinder
       @streaming ||= Streaming.new(self)
     end
     
+    def search(*args)
+      @search ||= Search.new(self)
+      @search.search_for(*args)
+    end
+    
     def reply(user, text, opts = {})
       user = user.to_s.strip
       text = text.to_s.strip
@@ -104,7 +110,7 @@ module BirdGrinder
         :query => params.stringify_keys
       })
       add_response_callback(http, blk)
-      return http
+      http
     end
     
     def post(path, params = {}, &blk)
@@ -118,7 +124,7 @@ module BirdGrinder
         :body => real_params
       })
       add_response_callback(http, blk)
-      return http
+      http
     end
     
     def add_response_callback(http, blk)

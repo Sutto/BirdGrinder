@@ -39,7 +39,7 @@ module BirdGrinder
       
       protected
       
-      def get(name, opts = {})
+      def get(name, opts = {}, attempts = 0)
         logger.debug "Getting stream #{name} w/ options: #{opts.inspect}"
         path = opts.delete(:path)
         processor = StreamProcessor.new(@parent, name)
@@ -49,7 +49,7 @@ module BirdGrinder
         }
         http_opts[:query] = opts if opts.present?
         url = streaming_base_url / api_version.to_s / "statuses" / "#{path || name}.json"
-        EventMachine::HttpRequest.new(url).get(http_opts)
+        http = EventMachine::HttpRequest.new(url).get(http_opts)
       end
       
     end
