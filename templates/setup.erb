@@ -1,10 +1,38 @@
 # Setup the env / start doing things.
 
 BirdGrinder::Loader.before_run do
-  # Your code goes here...
+  # Register your handler subclasses here.
+  # they will be auto loaded so it should
+  # be a matter of doing:
+  
+  DebugHandler.register!
+  
+  # ... if they're a subclass of BirdGrinder::Base / BirdGrinder::CommandHandler
+  # or, for any other handler,
+  
+  # BirdGrinder::Client.register_handler MyHandlerClass.new
+  
 end
 
 BirdGrinder::Loader.once_running do
   # Your code goes here...
   # BirdGrinder::Client.current references the current client
+
+  # Examples:
+  
+  # Start up the queue processor:
+  # BirdGrinder::QueueProcessor.start
+  
+  # Search once for "jebus"
+  # BirdGrinder::Client.current.search "jebus"
+  
+  # Repeatedly search for "BirdGrinder"
+  # BirdGrinder::Client.current.search "BirdGrinder", :repeat => true
+  
+  # Start streaming from the sample feed:
+  # BirdGrinder::Client.current.streaming.sample
+  
+  # Start streaming from a keyword:
+  # BirdGrinder::Client.current.streaming.track 'birdgrinder'
+  
 end

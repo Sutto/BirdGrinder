@@ -3,11 +3,11 @@
 class DebugHandler < BirdGrinder::Base
 
   on_event :incoming_mention do
-    logger.debug ">> Mention from #{user} - #{options.inspect}"
+    logger.info ">> Mention from #{user} - #{options.inspect}"
   end
     
   on_event :incoming_direct_message do
-    logger.debug ">> DM from #{user} - #{options.inspect}"
+    logger.info ">> DM from #{user} - #{options.inspect}"
   end
 
 end
