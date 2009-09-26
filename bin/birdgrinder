@@ -21,10 +21,10 @@ BirdGrinder::Application.processing(ARGV) do |a|
     
     setup_generator path
     
-    folders 'tmp', 'config', 'lib', 'handlers', 'test'
+    folders 'tmp', 'config', 'handlers', 'test'
     template 'boot.erb', 'config/boot.rb'
     template 'setup.erb', 'config/setup.rb'
-    template 'settings.yml.erb', 'settings.yml'
+    template 'settings.yml.erb', 'config/settings.yml'
     template 'debug_handler.erb', 'handlers/debug_handler.rb'
     template 'hello_world_handler.erb', 'handlers/hello_world_handler.rb'
     template 'rakefile.erb', 'Rakefile'

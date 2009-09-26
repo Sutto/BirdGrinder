@@ -23,7 +23,7 @@ module BirdGrinder
     VALID_FETCHES = [:direct_messages, :mentions]
     
     cattr_accessor :api_base_url
-    self.api_base_url = "http://twetter.sutto.net/"
+    self.api_base_url = "http://twitter.com/"
       
     attr_reader :auth_credentials
         

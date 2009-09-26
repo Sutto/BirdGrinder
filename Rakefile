@@ -13,7 +13,7 @@ spec = Gem::Specification.new do |s|
   s.authors     = ["Darcy Laycock"]
   s.summary     = "Evented Twitter Library of Doom"
   s.executables = FileList["bin/*"].map { |f| File.basename(f) }
-  s.files       = FileList["{bin,lib,templates,test}/**/*"].to_a
+  s.files       = FileList["{bin,lib,templates,test,examples}/**/*"].to_a
   s.platform    = Gem::Platform::RUBY
   s.version     = CURRENT_VERSION
   s.add_dependency "perennial",                 ">= 1.0.0.0"
@@ -21,8 +21,9 @@ spec = Gem::Specification.new do |s|
   # From GitHub.
   s.add_dependency "brianmario-yajl-ruby",      ">= 0.6.3"
   s.add_dependency "igrigorik-em-http-request", ">= 0.1.8"
-  s.add_dependency "madsimian-em-redis",        ">= 0.1.1"
-  s.add_dependency "wycats_moneta",             ">= 0.6.0"
+  # This should be madsimian-em-redis, but it's broken atm.
+  s.add_dependency "Sutto-em-redis",            ">= 0.1.1"
+  s.add_dependency "wycats-moneta",             ">= 0.6.0"
   
 end
 
