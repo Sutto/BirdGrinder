@@ -18,9 +18,15 @@ module BirdGrinder
       def process_stream_item(json)
         return if !json.is_a?(Hash)
         processed = json.to_nash.normalized
-        processed.type = lookup_type_for_steam_response(processed)
+        stream_type = lookup_type_for_steam_response(processed)
+        case stream_type
+        when :delete
+          processed = processed[:delete].status
+        when :limit
+          processed = processed.limit
+        end
+        processed.stream_type = stream_type
         processed.streaming_source = @stream_name
-        logger.info "Processing Stream Tweet #{processed.id}: #{processed.text}"
         @parent.delegate.receive_message(:incoming_stream, processed)
       end
    

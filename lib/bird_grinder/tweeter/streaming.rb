@@ -61,12 +61,12 @@ module BirdGrinder
         path = opts.delete(:path)
         processor = StreamProcessor.new(@parent, name)
         http_opts = {
-          :on_response => processor.method(:receive_chunk),
-          :head        => {'Authorization' => @parent.auth_credentials}
+          :head => {'Authorization' => @parent.auth_credentials}
         }
         http_opts[:query] = opts if opts.present?
         url = streaming_base_url / api_version.to_s / "statuses" / "#{path || name}.json"
         http = EventMachine::HttpRequest.new(url).get(http_opts)
+        http.stream(&processor.method(:receive_chunk))
       end
       
     end

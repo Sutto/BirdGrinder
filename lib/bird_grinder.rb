@@ -22,7 +22,7 @@ module BirdGrinder
   end
   
   has_library :cacheable, :tweeter, :client, :base, :command_handler,
-              :console, :queue_processor
+              :console, :queue_processor, :stream_handler
   
   extends_library :loader
   

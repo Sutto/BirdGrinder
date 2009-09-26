@@ -128,7 +128,7 @@ module BirdGrinder
     def fetch_latest(name, type)
       options = {}
       id = stored_id_for(type)
-      options[:since_id] = id unless id.blank?
+      options[:since_id] = id unless id.blank? || id.to_i == 0
       @tweeter.send(name, options)
     end
     

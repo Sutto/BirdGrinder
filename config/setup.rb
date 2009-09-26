@@ -1,5 +1,7 @@
 BirdGrinder::Loader.before_run do
-  DebugHandler.register!
+  #DebugHandler.register!
+  
+  #TwitterWatcher.register!
 end
 
 BirdGrinder::Loader.once_running do
