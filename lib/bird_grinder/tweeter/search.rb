@@ -14,6 +14,14 @@ module BirdGrinder
         @parent = parent
       end
       
+      # Uses the twitter search api to look up a
+      # given query. If :repeat is given, it will
+      # repeat indefinitely, getting only new messages each
+      # iteration.
+      #
+      # @param [String] query what you wish to search for
+      # @param [Hash] opts options for the query string (except for :repeat)
+      # @option opts [Boolean] :repeat if present, will repeat indefinitely.
       def search_for(query, opts = {})
         logger.info "Searching for #{query.inspect}"
         opts = opts.dup

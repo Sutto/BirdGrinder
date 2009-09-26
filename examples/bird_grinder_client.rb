@@ -1,6 +1,11 @@
 require 'redis'
 require 'json' unless Hash.new.respond_to?(:to_json)
 
+# An example of using bird grinder with redis
+# to create a remote tweeting queue. In essence, it
+# lets you schedule up tweets to be sent by any
+# app on your system as a part of your birdgrinder
+# process, making it easier to do responses etc.
 class BirdGrinderClient
   class Error < StandardError; end
   

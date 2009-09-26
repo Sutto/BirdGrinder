@@ -20,7 +20,7 @@ module BirdGrinder
         processed = json.to_nash.normalized
         processed.type = lookup_type_for_steam_response(processed)
         processed.streaming_source = @stream_name
-        logger.warn "Processing Stream Tweet - #{processed.id} - #{processed.text}"
+        logger.info "Processing Stream Tweet #{processed.id}: #{processed.text}"
         @parent.delegate.receive_message(:incoming_stream, processed)
       end
    

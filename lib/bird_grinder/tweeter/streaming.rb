@@ -2,6 +2,10 @@ require 'bird_grinder/tweeter/stream_processor'
 
 module BirdGrinder
   class Tweeter
+    # Basic support for the twitter streaming api. Provides
+    # access to sample, filter, follow and track. Note that
+    # it will dispatch messages as :incoming_stream, with
+    # options.streaming_source set to the stream origin.
     class Streaming
       is :loggable
       
@@ -16,14 +20,24 @@ module BirdGrinder
         logger.debug "Initializing Streaming Support"
       end
       
+      # Start processing the sample stream
+      #
+      # @param [Hash] opts extra options for the query
       def sample(opts = {})
         get(:sample, opts)
       end
       
+      # Start processing the filter stream
+      #
+      # @param [Hash] opts extra options for the query
       def filter(opts = {})
         get(:filter, opts)
       end
       
+      # Start processing the filter stream with a given follow
+      # argument.
+      #
+      # @param [Array] args what to follow, joined with ","
       def follow(*args)
         opts = args.extract_options!
         opts[:follow] = args.join(",")
@@ -31,6 +45,9 @@ module BirdGrinder
         get(:follow, opts)
       end
       
+      # Starts tracking a specific query.
+      # 
+      # @param [Hash] opts extra options for the query
       def track(query, opts = {})
         opts[:track] = query
         opts[:path] = :filter

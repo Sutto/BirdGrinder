@@ -1,12 +1,32 @@
 require 'ostruct'
 
 module BirdGrinder
+  # Glue between BirdGrinder::Tweeter and associated
+  # handlers to make it function in an evented fashion.
+  #
+  # The client basically brings it all together. It acts
+  # as a delegate for the tweeter and converts received
+  # results into dispatchable form for each handler.
+  #
+  # @see BirdGrinder::Tweeter
+  # @see BirdGrinder::Base
+  # @see http://github.com/Sutto/perennial/blob/master/lib/perennial/dispatchable.rb
   class Client
     is :loggable, :dispatchable, :cacheable
     
     cattr_accessor :current
     attr_reader :tweeter
     
+    # Initializes this client and creates a new, associated
+    # tweeter instance with this client set as the delegate.
+    # Also, for all of this clients handlers it will call
+    # client= if defined.
+    #
+    # Lastly, it updates BirdGrinder::Client.current to point
+    # to itself.
+    #
+    # @see BirdGrinder::Tweeter#initialize
+    # @see http://github.com/Sutto/perennial/blob/master/lib/perennial/dispatchable.rb
     def initialize
       logger.debug "Initializing client..."
       @tweeter = BirdGrinder::Tweeter.new(self)
@@ -15,35 +35,54 @@ module BirdGrinder
       self.current = self
     end
     
+    # Forwards a given message type (with options) to each handler,
+    # storing the current id if changed.
     def receive_message(type, options = BirdGrinder::Nash.new)
       logger.debug "receiving message: #{type.inspect} - #{options.id}"
       dispatch(type.to_sym, options)
       update_stored_id_for(type, options.id)
     end
     
+    # Fetches all direct messages and mentions and also schedules
+    # the next set of updates.
+    #
+    # @todo Schedule future fetch only when others are completed.
     def update_all
       fetch :direct_message, :mention
       update_and_schedule_fetch
     end
     
+    # Searches for a given query
+    #
+    # @see BirdGrinder::Tweeter#search
     def search(q, opts = {})
       @tweeter.search(q, opts)
     end
     
+    # Tweets some text as the current user
+    #
+    # @see BirdGrinder::Tweeter#tweet
     def tweet(text, opts = {})
       @tweeter.tweet(text, opts)
     end
     
+    # Direct messages a given user with the given text
+    #
+    # @see BirdGrinder::Tweeter#dm
     def dm(user, text, opts = {})
       @tweeter.dm(user, text, opts)
     end
     
+    # Replies to a given user with the given text.
+    #
+    # @see BirdGrinder::Tweeter#reply
     def reply(user, text, opts = {})
       @tweeter.reply(user, text, opts)
     end
     
-    # Controller stuff
-    
+    # Starts processing as a new client instance. The main
+    # entry point into the programs event loop.
+    # Once started, will invoke the once_running hook.    
     def self.run
       logger.info "Preparing to start BirdGrinder"
       client = self.new
@@ -53,6 +92,7 @@ module BirdGrinder
       end
     end
     
+    # Stops the event loop so the program can be stopped.
     def self.stop
       EventMachine.stop_event_loop
     end

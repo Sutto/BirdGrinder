@@ -1,7 +1,19 @@
 require 'uri'
 
 module BirdGrinder
-  # Asynchronous twitter client built on eventmachine
+  # An asynchronous, delegate-based twitter client that uses
+  # em-http-request and yajl on the backend. It's built to be fast,
+  # minimal and easy to use.
+  #
+  # The delegate is simply any class - the tweeter will attempt to
+  # call receive_message([Symbol], [BirdGrinder::Nash]) every time
+  # it processes a message / item of some kind. This in turn makes
+  # it easy to process items. Also, it will dispatch both
+  # incoming (e.g. :incoming_mention, :incoming_direct_message) and
+  # outgoing (e.g. :outgoing_tweet) events.
+  #
+  # It has support the twitter search api (via #search) and the currently-
+  # alpha twitter streaming api (using #streaming) built right in.
   class Tweeter
     is :loggable, :delegateable
     
@@ -15,12 +27,20 @@ module BirdGrinder
       
     attr_reader :auth_credentials
         
+    # Initializes the tweeter with a given delegate. It will use
+    # username and password from your settings file for authorization
+    # with twitter.
+    #
+    # @param [Delegate] delegate the delegate class
     def initialize(delegate)
       check_auth!
       @auth_credentials = [BirdGrinder::Settings.username, BirdGrinder::Settings.password]
       delegate_to delegate
     end
     
+    # Automates fetching mentions / direct messages at the same time.
+    #
+    # @param [Array<Symbol>] fetches what to load - :all for all fetches, or names of the fetches otherwise
     def fetch(*fetches)
       options = fetches.extract_options!
       fetches = VALID_FETCHES if fetches == [:all]
@@ -29,22 +49,34 @@ module BirdGrinder
       end
     end
     
+    # Tells the twitter api to follow a specific user
+    #
+    # @param [String] user the screen_name of the user to follow
+    # @param [Hash] opts extra options to pass in the query string
     def follow(user, opts = {})
       user = user.to_s.strip
-      logger.debug "Following '#{user}'"
+      logger.info "Following '#{user}'"
       post("friendships/create.json", opts.merge(:screen_name => user)) do
         delegate.receive_message(:outgoing_follow, :user => user)
       end
     end
     
+    # Tells the twitter api to unfollow a specific user
+    #
+    # @param [String] user the screen_name of the user to unfollow
+    # @param [Hash] opts extra options to pass in the query string
     def unfollow(user, opts = {})
       user = user.to_s.strip
-      logger.debug "Unfollowing '#{user}'"
+      logger.info "Unfollowing '#{user}'"
       post("friendships/destroy.json", opts.merge(:screen_name => user)) do
         delegate.receive_message(:outgoing_unfollow, :user => user)
       end
     end
     
+    # Updates your current status on twitter with a specific message
+    #
+    # @param [String] message the contents of your tweet
+    # @param [Hash] opts extra options to pass in the query string
     def tweet(message, opts = {})
       message = message.to_s.strip
       logger.debug "Tweeting #{message}"
@@ -53,6 +85,11 @@ module BirdGrinder
       end
     end
     
+    # Sends a direct message to a given user
+    #
+    # @param [String] user the screen_name of the user you wish to dm
+    # @param [String] text the text to send to the user
+    # @param [Hash] opts extra options to pass in the query string
     def dm(user, text, opts = {})
       text = text.to_s.strip
       user = user.to_s.strip
@@ -62,22 +99,43 @@ module BirdGrinder
       end
     end
     
+    # Returns an instance of BirdGrinder::Tweeter::Streaming,
+    # used for accessing the alpha streaming api for twitter.
+    #
+    # @see BirdGrinder::Tweeter::Streaming
     def streaming
       @streaming ||= Streaming.new(self)
     end
     
-    def search(*args)
+    # Uses the twitter search api to look up a given
+    # query, with a set of possible options.
+    #
+    # @param [String] query the query you wish to search for
+    # @param [Hash] opts the opts to query, all except :repeat are sent to twitter.
+    # @option opts [Boolean] :repeat repeat the query indefinitely, fetching new messages each time
+    def search(query, opts = {})
       @search ||= Search.new(self)
-      @search.search_for(*args)
+      @search.search_for(query, opts)
     end
     
+    # Sends a correctly-formatted at reply to a given user.
+    # If the users screen_name isn't at the start of the tweet,
+    # it will be appended accordingly.
+    #
+    # @param [String] user the user to reply to's screen name
+    # @param [String] test the text to reply with
+    # @param [Hash] opts the options to pass in the query string
     def reply(user, text, opts = {})
       user = user.to_s.strip
       text = text.to_s.strip
-      text = "@#{user} #{text}".strip unless text =~ /^\@#{user}\b/
+      text = "@#{user} #{text}".strip unless text =~ /^\@#{user}\b/i
       tweet(text, opts)
     end
     
+    # Asynchronously fetches the current users (as specified by your settings)
+    # direct messages from the twitter api
+    #
+    # @param [Hash] opts options to pass in the query string
     def direct_messages(opts = {})
       logger.debug "Fetching direct messages..."
       get("direct_messages.json", opts) do |dms|
@@ -88,6 +146,10 @@ module BirdGrinder
       end
     end
     
+    # Asynchronously fetches the current users (as specified by your settings)
+    # mentions from the twitter api
+    #
+    # @param [Hash] opts options to pass in the query string
     def mentions(opts = {})
       logger.debug "Fetching mentions..."
       get("statuses/mentions.json", opts) do |mentions|
@@ -135,7 +197,7 @@ module BirdGrinder
         elsif successful?(res)
           blk.call(res) unless blk.blank?
         else
-          logger.debug "Error: #{res.error} (on #{res.request})"
+          logger.eror "Error: #{res.error} (on #{res.request})"
         end
       end
     end
@@ -148,7 +210,7 @@ module BirdGrinder
         response.to_nash
       end
     rescue Yajl::ParseError => e
-      logger.warn "Invalid Response: #{http.response} (#{e.message})"
+      logger.error "Invalid Response: #{http.response} (#{e.message})"
       nil
     end
     

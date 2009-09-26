@@ -4,3 +4,6 @@ config/settings.yml
 *.gem
 data/*
 pkg/
+doc/
+.yardoc
+

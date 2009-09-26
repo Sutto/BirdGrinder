@@ -10,8 +10,8 @@ module BirdGrinder
   
   VERSION = [0, 1, 0, 0]
 
-  def self.version
-    VERSION.join(".")
+  def self.version(include_minor = false)
+    VERSION[0, (include_minor ? 4 : 3)].join(".")
   end
   
   manifest do |m, l|
@@ -21,7 +21,8 @@ module BirdGrinder
     l.register_controller :console, 'BirdGrinder::Console'
   end
   
-  has_library :cacheable, :tweeter, :client, :base, :command_handler, :console, :queue_processor
+  has_library :cacheable, :tweeter, :client, :base, :command_handler,
+              :console, :queue_processor
   
   extends_library :loader
   
