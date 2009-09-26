@@ -159,8 +159,54 @@ module BirdGrinder
         end
       end
     end
+    
+    # Gets a list ids who are following a given user id / screenname
+    #
+    # @param [String,Integer] id the user id or screen name to get followers for.
+    # @param [Hash] opts extra options to pass in the query string.
+    # @option opts [Integer] :cursor the cursor offset in the results
+    def follower_ids(id, opts = {})
+      cursor_list = []
+      if opts[:cursor].present?
+        logger.info "Getting page w/ cursor #{opts[:cursor]} for #{id}"
+        get_followers_page(id, opts) do |res|
+          results                 = BirdGrinder::Nash.new
+          results.cursor          = opts[:cursor]
+          results.user_id         = id
+          results.ids             = res.ids? ? res.ids : []
+          results.next_cursor     = res.next_cursor || 0
+          results.previous_cursor = res.previous_cursor || 0
+          results.all = (res.previous_cursor == 0 && res.next_cursor == 0)
+          delegate.receive_message(:incoming_follower_ids, results)
+        end
+      else
+        logger.info "Getting all followers for #{id}"
+        get_followers(id, opts.merge(:cursor => -1), {
+          :user_id => id,
+          :all     => true,
+          :ids     => []
+        }.to_nash)
+      end
+    end
         
     protected
+    
+    def get_followers(id, opts, nash)
+      get_followers_page(id, opts) do |res|
+        nash.ids += res.ids if res.ids?
+        if res.next_cursor == 0
+          delegate.receive_message(:incoming_follower_ids, nash)
+        else
+          get_followers(id, opts.merge(:cursor => res.next_cursor), nash)
+        end
+      end
+    end
+    
+    def get_followers_page(id, opts, &blk)
+      get("followers/ids/#{id}.json", opts) do |res|
+        blk.call(res)
+      end
+    end
     
     def request(path = "/")
       EventMachine::HttpRequest.new(api_base_url / path)
@@ -191,13 +237,17 @@ module BirdGrinder
     
     def add_response_callback(http, blk)
       http.callback do
-        res = parse_response(http)
-        if res.nil?
-          logger.warn "Got back a blank / errored response."
-        elsif successful?(res)
-          blk.call(res) unless blk.blank?
+        if http.response_header.status == 200
+          res = parse_response(http)
+          if res.nil?
+            logger.warn "Got back a blank / errored response."
+          elsif successful?(res)
+            blk.call(res) unless blk.blank?
+          else
+            logger.error "Error: #{res.error} (on #{res.request})"
+          end
         else
-          logger.eror "Error: #{res.error} (on #{res.request})"
+          logger.info "Request returned a non-200 status code, had #{http.response_header.status} instead."
         end
       end
     end

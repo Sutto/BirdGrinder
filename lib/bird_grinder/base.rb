@@ -123,7 +123,7 @@ module BirdGrinder
       @user                  = options.user.screen_name if options.user? && options.user.screen_name?
       @user                ||= options.sender_screen_name if options.sender_screen_name?
       @last_message_direct   = (message == :incoming_direct_message)
-      @last_message_id       = options.id
+      @last_message_id       = options.id? ? options.id : -1
     end
     
     def halt_handlers!
