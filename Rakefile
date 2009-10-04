@@ -27,10 +27,11 @@ spec = Gem::Specification.new do |s|
   
 end
 
-task :default => "test:units"
+task :default => "test"
+task :test => "test:units"
 
 namespace :test do
-  desc "Runs the unit tests for perennial"
+  desc "Runs the unit tests for birdgrinder"
   Rake::TestTask.new("units") do |t|
     t.pattern = 'test/*_test.rb'
     t.libs << 'test'
