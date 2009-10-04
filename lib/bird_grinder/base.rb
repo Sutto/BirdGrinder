@@ -94,12 +94,15 @@ module BirdGrinder
     # set correctly so twitter users can see what it is replying
     # to.
     #
+    # Use the :type option to override the default reply behavior. For example,
+    # to reply to an @-mention via direct message, specify :type => :dm
+    #
     # @param [String] message the message to reply with
     # @see http://github.com/Sutto/perennial/blob/master/lib/perennial/dispatchable.rb
-    def reply(message)
+    def reply(message, opts = {})
       message = message.to_s.strip
       return if @user.blank? || @client.blank? || message.blank?
-      if @last_message_direct
+      if @last_message_direct || opts[:type].to_s == 'dm'
         @client.dm(@user, message)
       else
         opts = {}
