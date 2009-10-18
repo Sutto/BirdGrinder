@@ -38,6 +38,7 @@ module BirdGrinder
     # Forwards a given message type (with options) to each handler,
     # storing the current id if changed.
     def receive_message(type, options = BirdGrinder::Nash.new)
+      options = options.to_nash if options.respond_to?(:to_nash)
       logger.debug "receiving message: #{type.inspect} - #{options.id? ? options.id : 'unknown id'}"
       dispatch(type.to_sym, options)
       update_stored_id_for(type, options.id) if options.id?
