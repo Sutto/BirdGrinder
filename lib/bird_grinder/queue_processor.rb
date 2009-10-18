@@ -38,7 +38,7 @@ module BirdGrinder
         else
           logger.debug "Got item, processing and scheduling next check"
           begin
-            handle_action Yajl::Parser.parse(res)
+            process_action Yajl::Parser.parse(res)
           rescue Yajl::ParseError => e
             logger.error "Couldn't parse json: #{e.message}"
           end
