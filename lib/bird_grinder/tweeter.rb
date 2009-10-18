@@ -57,7 +57,7 @@ module BirdGrinder
       user = user.to_s.strip
       logger.info "Following '#{user}'"
       post("friendships/create.json", opts.merge(:screen_name => user)) do
-        delegate.receive_message(:outgoing_follow, :user => user)
+        delegate.receive_message(:outgoing_follow, {:user => user}.to_nash)
       end
     end
     
@@ -69,7 +69,7 @@ module BirdGrinder
       user = user.to_s.strip
       logger.info "Unfollowing '#{user}'"
       post("friendships/destroy.json", opts.merge(:screen_name => user)) do
-        delegate.receive_message(:outgoing_unfollow, :user => user)
+        delegate.receive_message(:outgoing_unfollow, {:user => user}.to_nash)
       end
     end
     
@@ -95,7 +95,7 @@ module BirdGrinder
       user = user.to_s.strip
       logger.debug "DM'ing #{user}: #{text}"
       post("direct_messages/new.json", opts.merge(:user => user, :text => text)) do
-        delegate.receive_message(:outgoing_direct_message, :user => user, :text => text)
+        delegate.receive_message(:outgoing_direct_message, {:user => user, :text => text}.to_nash)
       end
     end
     
