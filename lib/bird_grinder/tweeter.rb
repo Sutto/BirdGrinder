@@ -1,4 +1,5 @@
 require 'uri'
+require 'cgi'
 
 module BirdGrinder
   # An asynchronous, delegate-based twitter client that uses
@@ -223,7 +224,7 @@ module BirdGrinder
     
     def post(path, params = {}, &blk)
       real_params = {}
-      params.each_pair { |k,v| real_params[URI.encode(k.to_s)] = URI.encode(v) }
+      params.each_pair { |k,v| real_params[CGI.escape(k.to_s)] = CGI.escape(v) }
       http = request(path).post({
         :head => {
           'Authorization' => @auth_credentials,
