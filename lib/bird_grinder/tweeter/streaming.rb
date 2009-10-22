@@ -59,7 +59,8 @@ module BirdGrinder
       def get(name, opts = {}, attempts = 0)
         logger.debug "Getting stream #{name} w/ options: #{opts.inspect}"
         path = opts.delete(:path)
-        processor = StreamProcessor.new(@parent, name)
+        stream_meta = opts.delete(:meta)
+        processor = StreamProcessor.new(@parent, name, stream_meta)
         http_opts = {
           :head => {'Authorization' => @parent.auth_credentials}
         }

@@ -3,9 +3,10 @@ module BirdGrinder
     class StreamProcessor
       is :loggable
       
-      def initialize(parent, stream_name)
+      def initialize(parent, stream_name, stream_meta = {})
         @parent = parent
         @stream_name = stream_name.to_sym
+        @stream_meta = stream_meta.to_nash
         setup_parser
       end
       
@@ -27,6 +28,7 @@ module BirdGrinder
         end
         processed.stream_type = stream_type
         processed.streaming_source = @stream_name
+        processed.meta = @stream_name
         @parent.delegate.receive_message(:incoming_stream, processed)
       end
    
