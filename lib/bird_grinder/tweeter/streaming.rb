@@ -1,4 +1,4 @@
-require 'bird_grinder/tweeter/stream_processor'
+require 'bird_grinder/tweeter/streaming_request'
 
 module BirdGrinder
   class Tweeter
@@ -24,14 +24,14 @@ module BirdGrinder
       #
       # @param [Hash] opts extra options for the query
       def sample(opts = {})
-        get(:sample, opts)
+        stream(:sample, opts)
       end
       
       # Start processing the filter stream
       #
       # @param [Hash] opts extra options for the query
       def filter(opts = {})
-        get(:filter, opts)
+        stream(:filter, opts)
       end
       
       # Start processing the filter stream with a given follow
@@ -42,7 +42,7 @@ module BirdGrinder
         opts = args.extract_options!
         opts[:follow] = args.join(",")
         opts[:path] = :filter
-        get(:follow, opts)
+        stream(:follow, opts)
       end
       
       # Starts tracking a specific query.
@@ -51,23 +51,20 @@ module BirdGrinder
       def track(query, opts = {})
         opts[:track] = query
         opts[:path] = :filter
-        get(:track, opts)
+        stream(:track, opts)
       end
       
       protected
       
+      def stream(name, opts = {})
+        req = StreamingRequest.new(@parent, name, opts)
+        yield req if block_given?
+        req.perform
+        req
+      end
+      
       def get(name, opts = {}, attempts = 0)
-        logger.debug "Getting stream #{name} w/ options: #{opts.inspect}"
-        path = opts.delete(:path)
-        stream_meta = opts.delete(:meta)
-        processor = StreamProcessor.new(@parent, name, stream_meta)
-        http_opts = {
-          :head => {'Authorization' => @parent.auth_credentials}
-        }
-        http_opts[:query] = opts if opts.present?
-        url = streaming_base_url / api_version.to_s / "statuses" / "#{path || name}.json"
-        http = EventMachine::HttpRequest.new(url).get(http_opts)
-        http.stream(&processor.method(:receive_chunk))
+        
       end
       
     end

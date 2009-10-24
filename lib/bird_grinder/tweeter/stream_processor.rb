@@ -28,7 +28,7 @@ module BirdGrinder
         end
         processed.stream_type = stream_type
         processed.streaming_source = @stream_name
-        processed.meta = @stream_name
+        processed.meta = @stream_meta
         @parent.delegate.receive_message(:incoming_stream, processed)
       end
    

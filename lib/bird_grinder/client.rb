@@ -60,6 +60,13 @@ module BirdGrinder
       @tweeter.search(q, opts)
     end
     
+    # Returns the streaming api instance
+    #
+    # @see BirdGrinder::Tweeter#streaming
+    def streaming
+      @tweeter.streaming
+    end
+    
     # Tweets some text as the current user
     #
     # @see BirdGrinder::Tweeter#tweet
