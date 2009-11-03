@@ -75,7 +75,7 @@ module BirdGrinder
       end
       
       def default_request_options
-        {:head => {'Authorization' => @parent.auth_credentials}}
+        {:head => {'Authorization' => @parent.auth_credentials}, :timeout => 0}
       end
       
       def http_options(type)
