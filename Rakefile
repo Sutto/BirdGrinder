@@ -20,7 +20,7 @@ spec = Gem::Specification.new do |s|
   s.add_dependency "eventmachine",              ">= 0.12.8"
   # From GitHub.
   s.add_dependency "brianmario-yajl-ruby",      ">= 0.6.3"
-  s.add_dependency "igrigorik-em-http-request", ">= 0.1.8"
+  s.add_dependency "em-http-request",           ">= 0.1.8"
   # This should be madsimian-em-redis, but it's broken atm.
   s.add_dependency "Sutto-em-redis",            ">= 0.1.1"
   s.add_dependency "wycats-moneta",             ">= 0.6.0"
