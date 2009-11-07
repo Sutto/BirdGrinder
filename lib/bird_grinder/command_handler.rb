@@ -59,7 +59,7 @@ module BirdGrinder
         end
       else
         logger.debug "Checking for command in direct message"
-        command, data = options.text.split(" ", 2)
+        command, data = options.text.split(/\s+/, 2)
       end
       if (command_name = extract_command_name(command)).present?
         logger.info "Processing command '#{command_name}' for #{user}"

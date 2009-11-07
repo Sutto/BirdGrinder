@@ -15,6 +15,9 @@ module BirdGrinder
       
       attr_accessor  :parent
       
+      # Initializes a streaming subclient for a given tweeter
+      #
+      # @param [BirdGrinder::Tweeter] parent the parent tweeter which we use to dispatch events.
       def initialize(parent)
         @parent = parent
         logger.debug "Initializing Streaming Support"
