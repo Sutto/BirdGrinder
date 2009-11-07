@@ -1,5 +1,4 @@
 BirdGrinder::Loader.before_run do
-  StreamDebugger.register!
 end
 
 BirdGrinder::Loader.once_running do
