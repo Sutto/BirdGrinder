@@ -16,14 +16,15 @@ spec = Gem::Specification.new do |s|
   s.files       = FileList["{bin,lib,templates,test,examples}/**/*"].to_a
   s.platform    = Gem::Platform::RUBY
   s.version     = CURRENT_VERSION
-  s.add_dependency "perennial",                 ">= 1.0.0.0"
+  s.add_dependency "perennial",                 ">= 1.1.0"
   s.add_dependency "eventmachine",              ">= 0.12.8"
   # From GitHub.
   s.add_dependency "brianmario-yajl-ruby",      ">= 0.6.3"
   s.add_dependency "em-http-request",           ">= 0.1.8"
   # This should be madsimian-em-redis, but it's broken atm.
-  s.add_dependency "Sutto-em-redis",            ">= 0.1.1"
-  s.add_dependency "wycats-moneta",             ">= 0.6.0"
+  # Also note that these are required for different libraries.
+  # s.add_dependency "Sutto-em-redis",            ">= 0.1.1"
+  # s.add_dependency "wycats-moneta",             ">= 0.6.0"
   
 end
 
