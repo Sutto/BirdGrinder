@@ -1,4 +1,4 @@
-## Super simple bots via BirdGrinder::CommandHandler ##
+# Super simple bots via BirdGrinder::CommandHandler #
 
 One of the most common uses for birdgrinder is to write
 simple command-based bots. E.g. bots that response to:

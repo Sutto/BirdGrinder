@@ -40,19 +40,20 @@ module BirdGrinder
       # Start processing the filter stream with a given follow
       # argument.
       #
-      # @param [Array] args what to follow, joined with ","
+      # @param [Array] args what to follow, joined with "," followed by opts
       def follow(*args)
         opts = args.extract_options!
-        opts[:follow] = args.join(",")
+        opts[:follow] = args.flatten.join(",")
         opts[:path] = :filter
         stream(:follow, opts)
       end
       
       # Starts tracking a specific query.
       # 
-      # @param [Hash] opts extra options for the query
-      def track(query, opts = {})
-        opts[:track] = query
+      # @param [Array] args what to track, joined with "," followed by opts
+      def track(*args)
+        opts = args.extract_options!
+        opts[:track] = args.flatten.join(",")
         opts[:path] = :filter
         stream(:track, opts)
       end

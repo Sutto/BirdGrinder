@@ -1,4 +1,4 @@
-## Getting Started ##
+# Getting Started #
 
 First up, make sure you have [gemcutter](http://gemcutter.org/)
 in your sources. Once that's done, it should be as simple as doing:
@@ -41,7 +41,7 @@ Creating new handlers is a simple case of creating `handlers/your\_handler\_name
 (or whatever it is called), subclassing `BirdGrinder::Base` or `BirdGrinder::CommandHandler`
 and then registering it (like `DebugHandler`) in `config/setup.rb`
 
-## Getting started with BirdGrinder::Base ##
+## Writing Bots ##
 
 Although there are several built in base handlers (e.g. `BirdGrinder::CommandHandler`
 and `BirdGrinder::StreamHandler`) that let us handle common functionality, your handlers
@@ -78,6 +78,8 @@ in `handlers/`, then register your class by adding `YourHandlerKlass.register!` 
 
 Event names are follow a pattern of `:DIRECTION_TYPE`, e.g. `:incoming_stream`, `:outgoing_direct_message`
 or event `:incoming_mention` (see `docs/events.md` for more.)
+
+## Writing a BirdGrinder::Base handler ##
 
 To get started, create `handlers/my_demo_handler.rb` in your generated birdgrinder project
 and add the following:
@@ -162,3 +164,4 @@ Or, if you wanted to actually follow them, you could use client:
   
     end
     
+For more information, look through the other items in this folder.

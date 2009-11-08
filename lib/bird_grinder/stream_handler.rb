@@ -9,7 +9,7 @@ module BirdGrinder
       # @param [Symbol] the stream name, e.g. :filter / :sample
       def tweet_from_stream(name, &blk)
         on_event(:incoming_stream) do
-          instance_eval(&blk) if options.streaming_source == name && options.stream_type == :tweet
+          instance_eval(&blk) if correct_stream?(name, :tweet)
         end
       end
       
@@ -17,7 +17,7 @@ module BirdGrinder
       # @param [Symbol] the stream name, e.g. :filter / :sample
       def delete_from_stream(name, &blk)
         on_event(:incoming_stream) do
-          instance_eval(&blk) if options.streaming_source == name && options.stream_type == :delete
+          instance_eval(&blk) if correct_stream?(name, :delete)
         end
       end
       
@@ -25,7 +25,7 @@ module BirdGrinder
       # @param [Symbol] the stream name, e.g. :filter / :sample
       def rate_limit_from_stream(name, &blk)
         on_event(:incoming_stream) do
-          instance_eval(&blk) if options.streaming_source == name && options.stream_type == :limit
+          instance_eval(&blk) if correct_stream?(name, :limit)
         end
       end
       
@@ -39,6 +39,12 @@ module BirdGrinder
       end
       
     end 
+    
+    protected
+    
+    def correct_stream?(name, type)
+      options.streaming_source == name && options.stream_type == type
+    end
     
   end
 end
