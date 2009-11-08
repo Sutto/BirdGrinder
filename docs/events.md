@@ -94,6 +94,27 @@ In this case, `options` holds:
 - `profile_image_url` - the users profile image
 - `created_at` - when the tweet was created
 
+## Event: `:incoming_stream`
+
+The stream events are handled slightly different to others. For started, all
+stream tweets are dispatched when a stream recieves another item / line, and consist
+of the following items in `options`:
+
+- `stream_type` - on of `:tweet`, `:limit` or `:delete` (corresponding to stream events)
+- `streaming_source` - the name of the method used to generate the stream (e.g. `:filter`, `:sample`, `:track` or `:follow`)
+- `meta` - any data passed to the streaming method call via a `:meta` option (e.g. `client.stream :meta => 'hello!'`)
+
+Finally, each of the `stream_type` values has some extra data:
+
+`:delete` also has:
+- `id` - the id of the message delete
+- `user_id` - the user id of who owned the tweet
+
+`:limit` has:
+- `track` - the number of missed tweets
+
+And lastly, `:tweet` should also hold the standard tweet data referenced below.
+
 ## Default Tweet Data / Responses ##
 
 Where mentioned above, most tweets contain the following data (note that
