@@ -23,18 +23,18 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<perennial>, [">= 1.1.0"])
       s.add_runtime_dependency(%q<eventmachine>, [">= 0.12.8"])
-      s.add_runtime_dependency(%q<brianmario-yajl-ruby>, [">= 0.6.3"])
+      s.add_runtime_dependency(%q<yajl-ruby>, [">= 0.6.3"])
       s.add_runtime_dependency(%q<em-http-request>, [">= 0.1.8"])
     else
       s.add_dependency(%q<perennial>, [">= 1.1.0"])
       s.add_dependency(%q<eventmachine>, [">= 0.12.8"])
-      s.add_dependency(%q<brianmario-yajl-ruby>, [">= 0.6.3"])
+      s.add_dependency(%q<yajl-ruby>, [">= 0.6.3"])
       s.add_dependency(%q<em-http-request>, [">= 0.1.8"])
     end
   else
     s.add_dependency(%q<perennial>, [">= 1.1.0"])
     s.add_dependency(%q<eventmachine>, [">= 0.12.8"])
-    s.add_dependency(%q<brianmario-yajl-ruby>, [">= 0.6.3"])
+    s.add_dependency(%q<yajl-ruby>, [">= 0.6.3"])
     s.add_dependency(%q<em-http-request>, [">= 0.1.8"])
   end
 end
