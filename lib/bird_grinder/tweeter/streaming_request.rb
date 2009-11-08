@@ -32,7 +32,7 @@ module BirdGrinder
         logger.debug "Creating stream '#{name}' with options: #{options.inspect}"
         @parent         = parent
         @name           = name
-        @path           = options.delete(:path) || :name
+        @path           = options.delete(:path) || name
         @metadata       = options.delete(:metadata) || {}
         @options        = options
         @failure_delay  = nil
@@ -57,7 +57,8 @@ module BirdGrinder
       # 
       # @param [Symbol] type the type of error, one of :http or :network
       def fail!(type)
-        logger.debug "Streaming failed with #{type}"
+        suffix = type == :http ? " (Error Code #{@current_request.response_header.status})" : ""
+        logger.debug "Streaming failed with #{type}#{suffix}"
         if @failure_count == 0 || @failure_reason != type
           logger.debug "Instantly restarting (#{@failure_count == 0  ? "First failure" : "Different type of failure"})"
           EM.next_tick { perform }
