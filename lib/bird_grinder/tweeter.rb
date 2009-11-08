@@ -58,7 +58,7 @@ module BirdGrinder
       user = user.to_s.strip
       logger.info "Following '#{user}'"
       post("friendships/create.json", opts.merge(:screen_name => user)) do
-        delegate.receive_message(:outgoing_follow, {:user => user}.to_nash)
+        delegate.receive_message(:outgoing_follow, N(:user => user))
       end
     end
     
@@ -70,7 +70,7 @@ module BirdGrinder
       user = user.to_s.strip
       logger.info "Unfollowing '#{user}'"
       post("friendships/destroy.json", opts.merge(:screen_name => user)) do
-        delegate.receive_message(:outgoing_unfollow, {:user => user}.to_nash)
+        delegate.receive_message(:outgoing_unfollow, N(:user => user))
       end
     end
     
@@ -95,8 +95,8 @@ module BirdGrinder
       text = text.to_s.strip
       user = user.to_s.strip
       logger.debug "DM'ing #{user}: #{text}"
-      post("direct_messages/new.json", opts.merge(:user => user, :text => text)) do
-        delegate.receive_message(:outgoing_direct_message, {:user => user, :text => text}.to_nash)
+      post("direct_messages/new.json", opts.merge(:user => user, :text => text)) do |json|
+        delegate.receive_message(:outgoing_direct_message, status_to_args(json, :direct_message))
       end
     end
     
@@ -182,11 +182,11 @@ module BirdGrinder
         end
       else
         logger.info "Getting all followers for #{id}"
-        get_followers(id, opts.merge(:cursor => -1), {
+        get_followers(id, opts.merge(:cursor => -1), N({
           :user_id => id,
           :all     => true,
           :ids     => []
-        }.to_nash)
+        }))
       end
     end
         
@@ -276,9 +276,8 @@ module BirdGrinder
     end
     
     def check_auth!
-      if BirdGrinder::Settings["username"].blank? || BirdGrinder::Settings["username"].blank?
-        raise BirdGrinder::MissingAuthDetails, "Missing twitter username or password."
-      end
+      return if BirdGrinder::Settings.username? && BirdGrinder::Settings.password?
+      raise BirdGrinder::MissingAuthDetails, "Missing twitter username or password."
     end
     
   end
