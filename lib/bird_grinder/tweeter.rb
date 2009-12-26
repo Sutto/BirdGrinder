@@ -20,13 +20,13 @@ module BirdGrinder
     
     require 'bird_grinder/tweeter/streaming'
     require 'bird_grinder/tweeter/search'
+    require 'bird_grinder/tweeter/basic_authentication'
+    require 'bird_grinder/tweeter/oauth_authentication'
     
     VALID_FETCHES = [:direct_messages, :mentions]
     
     cattr_accessor :api_base_url
     self.api_base_url = "http://twitter.com/"
-      
-    attr_reader :auth_credentials
         
     # Initializes the tweeter with a given delegate. It will use
     # username and password from your settings file for authorization
@@ -35,7 +35,6 @@ module BirdGrinder
     # @param [Delegate] delegate the delegate class
     def initialize(delegate)
       check_auth!
-      @auth_credentials = [BirdGrinder::Settings.username, BirdGrinder::Settings.password]
       delegate_to delegate
     end
     
@@ -189,6 +188,11 @@ module BirdGrinder
         }))
       end
     end
+    
+    # @todo Use correct authentication method
+    def authentication_method
+      @authentication_method ||= BasicAuthentication.new
+    end
         
     protected
     
@@ -214,9 +218,10 @@ module BirdGrinder
     end
     
     def get(path, params = {}, &blk)
-      http = request(path).get({
-        :head => {'Authorization' => @auth_credentials},
-        :query => params.stringify_keys
+      req = request(path)
+      http = req.get({
+        :head => {'Authorization' => authentication_method.header_for(req, :post, real_params)},
+        :query => params
       })
       add_response_callback(http, blk)
       http
@@ -225,9 +230,10 @@ module BirdGrinder
     def post(path, params = {}, &blk)
       real_params = {}
       params.each_pair { |k,v| real_params[CGI.escape(k.to_s)] = CGI.escape(v) }
-      http = request(path).post({
+      req = request(path)
+      http = req.post({
         :head => {
-          'Authorization' => @auth_credentials,
+          'Authorization' => authentication_method.header_for(req, :post, real_params),
           'Content-Type'  => 'application/x-www-form-urlencoded'
         },
         :body => real_params

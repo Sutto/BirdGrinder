@@ -45,7 +45,8 @@ module BirdGrinder
         logger.debug "Preparing to start stream"
         @stream_processor = nil
         type = request_method
-        http = EventMachine::HttpRequest.new(full_url).send(type, http_options(type))
+        request = EventMachine::HttpRequest.new(full_url)
+        http = request.send(type, http_options(type, request))
         # Handle failures correctly so we can back off
         @current_request = http
         http.errback  { fail!(:network)}
@@ -100,21 +101,24 @@ module BirdGrinder
       # what method is used to send the request. It's important that
       # this is used for credentials as well as making sure there is
       # no timeout on the connection
-      def default_request_options
-        {:head => {'Authorization' => @parent.auth_credentials}, :timeout => 0}
+      def default_request_options(r)
+        {:timeout => 0}
       end
       
       # Returns normalized http options for the current request, built
       # on top of default_request_options and a few other details.
       #
       # @param [Symbol] type the type of request - :post or :get
-      def http_options(type)
+      # @param [EventMachine::HttpRequest] the request itself
+      def http_options(type, request)
         base = self.default_request_options
+        base[:head] ||= {}
+        base[:head]['Authorization'] = authentication_method.header_for(request, type)
         if @options.present?
           if type == :get
             base[:query] = @options
           else
-            base[:head].merge! 'Content-Type'  => "application/x-www-form-urlencoded"
+            base[:head]['Content-Type'] = "application/x-www-form-urlencoded"
             base[:body] = body = {}
             @options.each_pair { |k,v| body[CGI.escape(k.to_s)] = CGI.escape(v) }
           end
@@ -134,6 +138,10 @@ module BirdGrinder
       # Returns the full streaming api associated with this url.
       def full_url
         @full_url ||= (Streaming.streaming_base_url / Streaming.api_version.to_s / "statuses" / "#{@path}.json")
+      end
+      
+      def authentication_method
+        @authentication_method ||= BasicAuthentication.new
       end
       
     end
