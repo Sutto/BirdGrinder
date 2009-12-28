@@ -20,8 +20,9 @@ module BirdGrinder
     
     require 'bird_grinder/tweeter/streaming'
     require 'bird_grinder/tweeter/search'
-    require 'bird_grinder/tweeter/basic_authentication'
-    require 'bird_grinder/tweeter/oauth_authentication'
+    require 'bird_grinder/tweeter/abstract_authorization'
+    require 'bird_grinder/tweeter/basic_authorization'
+    require 'bird_grinder/tweeter/oauth_authorization'
     
     VALID_FETCHES = [:direct_messages, :mentions]
     
@@ -189,9 +190,9 @@ module BirdGrinder
       end
     end
     
-    # @todo Use correct authentication method
-    def authentication_method
-      @authentication_method ||= BasicAuthentication.new
+    # @todo Use correct authorization method
+    def authorization_method
+      @authorization_method ||= (OAuthAuthorization.enabled? ? OAuthAuthorization : BasicAuthorization).new
     end
         
     protected
@@ -219,10 +220,8 @@ module BirdGrinder
     
     def get(path, params = {}, &blk)
       req = request(path)
-      http = req.get({
-        :head => {'Authorization' => authentication_method.header_for(req, :post, real_params)},
-        :query => params
-      })
+      http = req.get(:query => params)
+      authorization_method.add_header_to(http)
       add_response_callback(http, blk)
       http
     end
@@ -232,12 +231,10 @@ module BirdGrinder
       params.each_pair { |k,v| real_params[CGI.escape(k.to_s)] = CGI.escape(v) }
       req = request(path)
       http = req.post({
-        :head => {
-          'Authorization' => authentication_method.header_for(req, :post, real_params),
-          'Content-Type'  => 'application/x-www-form-urlencoded'
-        },
+        :head => {'Content-Type'  => 'application/x-www-form-urlencoded'},
         :body => real_params
       })
+      authorization_method.add_header_to(http)
       add_response_callback(http, blk)
       http
     end

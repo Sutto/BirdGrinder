@@ -8,7 +8,7 @@ require 'em-http'
 module BirdGrinder
   include Perennial
   
-  VERSION = [0, 1, 3, 1]
+  VERSION = [0, 1, 4, 0]
 
   def self.version(include_minor = false)
     VERSION[0, (include_minor ? 4 : 3)].join(".")

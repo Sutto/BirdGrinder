@@ -26,5 +26,26 @@ BirdGrinder::Application.processing(ARGV) do |a|
     template 'hello_world_handler.erb', 'handlers/hello_world_handler.rb'
     template 'rakefile.erb', 'Rakefile'
   end
+  
+  a.add("authorize", "Gets oauth access token information making it possible to use oauth authentication") do |options|
+    puts "First, you need to create a twitter application and get a consumer key and secret."
+    puts "To do this, visit http://twitter.com/apps/new"
+    system("open", "http://twitter.com/apps/new") if yes?("Are you running OSX and wish to open this url now?")
+    consumer_key, consumer_secret = "", ""
+    consumer_key    = ask("What is your applications consumer key?", "")    while consumer_key.blank?
+    consumer_secret = ask("What is your applications consumer secret?", "") while consumer_secret.blank?
+    BirdGrinder::Settings.oauth.consumer_key    = consumer_key
+    BirdGrinder::Settings.oauth.consumer_secret = consumer_secret
+    oauth = BirdGrinder::Tweeter::OAuthAuthentication
+    rtoken = oauth.request_token
+    token, secret = rtoken.token, rtoken.secret
+    puts "To get a pin for your account, please visit: #{rtoken.authorize_url}"
+    system("open", rtoken.authorize_url) if yes?("Are you running OSX and wish to open this url now?")
+    value = ""
+    value = ask("What is the PIN twitter gave you?", "") while value.blank?
+    puts "Updating settings..."
+    oauth.retrieve_access_token!(token, secret, value)
+    puts "Done! - Your access token should now be stored"
+  end
 
 end

@@ -1,23 +1,21 @@
 module BirdGrinder
   class Tweeter
-    class BasicAuthentication
+    class BasicAuthorization < AbstractAuthorization
       
       def initialize
         @basic_auth_credentials = [BirdGrinder::Settings.username, BirdGrinder::Settings.password]
-        generate_header!
       end
       
       attr_reader :basic_auth_credentials
       
-      # Authenticats a given request using Basic Authentication.
-      def header_for(request, http_method, opts = {})
-        @auth_header
+      # Authenticats a given request using Basic authorization.
+      def header_for(http)
+        @basic_auth_credentials
       end
       
       protected
       
       def generate_header!
-        @auth_header = ["Basic #{@basic_auth_credentials.join(":")}"].pack('m*')
       end
       
     end
