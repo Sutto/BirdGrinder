@@ -13,11 +13,6 @@ module BirdGrinder
         @basic_auth_credentials
       end
       
-      protected
-      
-      def generate_header!
-      end
-      
     end
   end
 end

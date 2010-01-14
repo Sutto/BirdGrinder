@@ -1,3 +1,5 @@
+# Force the correct version of oauth if it's available.
+gem 'sutto-oauth' if respond_to?(:gem)
 require 'oauth'
 require 'em-http-oauth-request'
 

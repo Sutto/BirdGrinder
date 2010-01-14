@@ -27,22 +27,30 @@ BirdGrinder::Application.processing(ARGV) do |a|
     template 'rakefile.erb', 'Rakefile'
   end
   
-  a.add("authorize", "Gets oauth access token information making it possible to use oauth authentication") do |options|
+  a.add("authorize [PATH]", "Gets oauth access token information making it possible to use oauth authentication, optionally pointing to an application") do |*args|
+    # Use the correct application path
+    options = args.extract_options!
+    BirdGrinder::Settings.root = File.expand_path(args[0] || ".")
+    # Run with a nonexistant controller.
+    BirdGrinder::Loader.run!(:authorizer)
+    # Ask the user what to do
     puts "First, you need to create a twitter application and get a consumer key and secret."
     puts "To do this, visit http://twitter.com/apps/new"
     system("open", "http://twitter.com/apps/new") if yes?("Are you running OSX and wish to open this url now?")
     consumer_key, consumer_secret = "", ""
-    consumer_key    = ask("What is your applications consumer key?", "")    while consumer_key.blank?
-    consumer_secret = ask("What is your applications consumer secret?", "") while consumer_secret.blank?
-    BirdGrinder::Settings.oauth.consumer_key    = consumer_key
-    BirdGrinder::Settings.oauth.consumer_secret = consumer_secret
-    oauth = BirdGrinder::Tweeter::OAuthAuthentication
+    consumer_key    = ask("What is your applications consumer key?")    while consumer_key.blank?
+    consumer_secret = ask("What is your applications consumer secret?") while consumer_secret.blank?
+    settings = BirdGrinder::Settings
+    settings.oauth = BirdGrinder::Nash.new unless settings.oauth.is_a?(BirdGrinder::Nash)
+    settings.oauth.consumer_key    = consumer_key
+    settings.oauth.consumer_secret = consumer_secret
+    oauth = BirdGrinder::Tweeter::OAuthAuthorization
     rtoken = oauth.request_token
     token, secret = rtoken.token, rtoken.secret
     puts "To get a pin for your account, please visit: #{rtoken.authorize_url}"
     system("open", rtoken.authorize_url) if yes?("Are you running OSX and wish to open this url now?")
     value = ""
-    value = ask("What is the PIN twitter gave you?", "") while value.blank?
+    value = ask("What is the PIN twitter gave you?") while value.blank?
     puts "Updating settings..."
     oauth.retrieve_access_token!(token, secret, value)
     puts "Done! - Your access token should now be stored"

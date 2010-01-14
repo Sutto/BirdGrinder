@@ -45,7 +45,7 @@ module BirdGrinder
         logger.debug "Preparing to start stream"
         @stream_processor = nil
         type = request_method
-        http = EventMachine::HttpRequest.new(full_url).send(type, http_options(type, request))
+        http = EventMachine::HttpRequest.new(full_url).send(type, http_options(type))
         authorization_method.add_header_to(http)
         # Handle failures correctly so we can back off
         @current_request = http
@@ -101,7 +101,7 @@ module BirdGrinder
       # what method is used to send the request. It's important that
       # this is used for credentials as well as making sure there is
       # no timeout on the connection
-      def default_request_options(r)
+      def default_request_options
         {:timeout => 0, :head => {}}
       end
       
@@ -109,8 +109,7 @@ module BirdGrinder
       # on top of default_request_options and a few other details.
       #
       # @param [Symbol] type the type of request - :post or :get
-      # @param [EventMachine::HttpRequest] the request itself
-      def http_options(type, request)
+      def http_options(type)
         base = self.default_request_options
         if @options.present?
           if type == :get

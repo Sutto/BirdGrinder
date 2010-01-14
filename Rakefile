@@ -4,7 +4,7 @@ require 'rake/testtask'
 require 'rake/gempackagetask'
 
 require File.join(File.dirname(__FILE__), "lib", "bird_grinder")
-CURRENT_VERSION = BirdGrinder.version(ENV['RELEASE'].blank?)
+CURRENT_VERSION = BirdGrinder.version
 
 spec = Gem::Specification.new do |s|
   s.name        = 'birdgrinder'
@@ -16,12 +16,14 @@ spec = Gem::Specification.new do |s|
   s.files       = FileList["{bin,lib,templates,test,examples}/**/*"].to_a
   s.platform    = Gem::Platform::RUBY
   s.version     = CURRENT_VERSION
-  s.add_dependency "perennial",            ">= 1.1.0"
-  s.add_dependency "eventmachine",         ">= 0.12.8"
-  s.add_dependency "yajl-ruby",            ">= 0.6.3"
-  s.add_dependency "em-http-request",       ">= 0.1.8"
+  s.add_dependency "perennial",             ">= 1.2.5"
+  s.add_dependency "eventmachine",          ">= 0.12.10"
+  s.add_dependency "yajl-ruby",             ">= 0.6.8"
+  s.add_dependency "em-http-request",       ">= 0.2.6"
   s.add_dependency "moneta",                ">= 0.6.0"
-  s.add_dependency "em-http-oauth-request", ">= 0.1.0"
+  # Until we have a version of oauth that incorporates my em-http-request patch,
+  # We'll have to use my custom one.
+  s.add_dependency "sutto-oauth",           ">= 0.3.6"
   # This should be madsimian-em-redis, but it's broken atm.
   # s.add_dependency "Sutto-em-redis",            ">= 0.1.1"
 end
