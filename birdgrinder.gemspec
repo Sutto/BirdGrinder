@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{birdgrinder}
-  s.version = "0.1.4.0"
+  s.version = "0.1.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Darcy Laycock"]
-  s.date = %q{2009-12-29}
+  s.date = %q{2010-01-14}
   s.default_executable = %q{birdgrinder}
   s.email = %q{sutto@sutto.net}
   s.executables = ["birdgrinder"]
@@ -21,26 +21,26 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<perennial>, [">= 1.1.0"])
-      s.add_runtime_dependency(%q<eventmachine>, [">= 0.12.8"])
-      s.add_runtime_dependency(%q<yajl-ruby>, [">= 0.6.3"])
-      s.add_runtime_dependency(%q<em-http-request>, [">= 0.1.8"])
+      s.add_runtime_dependency(%q<perennial>, [">= 1.2.5"])
+      s.add_runtime_dependency(%q<eventmachine>, [">= 0.12.10"])
+      s.add_runtime_dependency(%q<yajl-ruby>, [">= 0.6.8"])
+      s.add_runtime_dependency(%q<em-http-request>, [">= 0.2.6"])
       s.add_runtime_dependency(%q<moneta>, [">= 0.6.0"])
-      s.add_runtime_dependency(%q<em-http-oauth-request>, [">= 0.1.0"])
+      s.add_runtime_dependency(%q<sutto-oauth>, [">= 0.3.6"])
     else
-      s.add_dependency(%q<perennial>, [">= 1.1.0"])
-      s.add_dependency(%q<eventmachine>, [">= 0.12.8"])
-      s.add_dependency(%q<yajl-ruby>, [">= 0.6.3"])
-      s.add_dependency(%q<em-http-request>, [">= 0.1.8"])
+      s.add_dependency(%q<perennial>, [">= 1.2.5"])
+      s.add_dependency(%q<eventmachine>, [">= 0.12.10"])
+      s.add_dependency(%q<yajl-ruby>, [">= 0.6.8"])
+      s.add_dependency(%q<em-http-request>, [">= 0.2.6"])
       s.add_dependency(%q<moneta>, [">= 0.6.0"])
-      s.add_dependency(%q<em-http-oauth-request>, [">= 0.1.0"])
+      s.add_dependency(%q<sutto-oauth>, [">= 0.3.6"])
     end
   else
-    s.add_dependency(%q<perennial>, [">= 1.1.0"])
-    s.add_dependency(%q<eventmachine>, [">= 0.12.8"])
-    s.add_dependency(%q<yajl-ruby>, [">= 0.6.3"])
-    s.add_dependency(%q<em-http-request>, [">= 0.1.8"])
+    s.add_dependency(%q<perennial>, [">= 1.2.5"])
+    s.add_dependency(%q<eventmachine>, [">= 0.12.10"])
+    s.add_dependency(%q<yajl-ruby>, [">= 0.6.8"])
+    s.add_dependency(%q<em-http-request>, [">= 0.2.6"])
     s.add_dependency(%q<moneta>, [">= 0.6.0"])
-    s.add_dependency(%q<em-http-oauth-request>, [">= 0.1.0"])
+    s.add_dependency(%q<sutto-oauth>, [">= 0.3.6"])
   end
 end
